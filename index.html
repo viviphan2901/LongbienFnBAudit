@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Audit Buffet Long Bien Golf Course</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet"><style>/* Layout: sticky result bar on top, three views (checklist, summary, history); one column, max 980px. */
+:root{
+  --bg:#f3f5f4; --surface:#ffffff; --ink:#15211e; --muted:#5d6b67; --line:#d9dfdc;
+  --accent:#0e5f52; --accent-ink:#ffffff; --accent-soft:#e2efeb;
+  --good:#1c7a45; --good-bg:#e1f3e8; --warn:#8a6100; --warn-bg:#fbf0cf; --bad:#b3261e; --bad-bg:#fbe4e2; --na:#5d6b67; --na-bg:#e9edeb;
+  --display:"Fraunces","Be Vietnam Pro",Georgia,serif; --body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#101614; --surface:#18201d; --ink:#e8eeeb; --muted:#9aa8a3; --line:#2c3833;
+    --accent:#5fc7b2; --accent-ink:#08201b; --accent-soft:#1c2f2a;
+    --good:#6fd39a; --good-bg:#173524; --warn:#f0c659; --warn-bg:#3a2f10; --bad:#ff9a92; --bad-bg:#431f1c; --na:#9aa8a3; --na-bg:#242e2a;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#101614; --surface:#18201d; --ink:#e8eeeb; --muted:#9aa8a3; --line:#2c3833;
+  --accent:#5fc7b2; --accent-ink:#08201b; --accent-soft:#1c2f2a;
+  --good:#6fd39a; --good-bg:#173524; --warn:#f0c659; --warn-bg:#3a2f10; --bad:#ff9a92; --bad-bg:#431f1c; --na:#9aa8a3; --na-bg:#242e2a;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 64px}
+header.top{padding:20px 0 12px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+h1{font-family:var(--display);font-size:26px;line-height:1.15;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:13px;margin:0}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line)}
+.bar-in{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.pct{font-family:var(--display);font-size:30px;line-height:1;min-width:86px}
+.pill{display:inline-block;padding:3px 12px;border-radius:999px;font-weight:700;font-size:13px;letter-spacing:.04em}
+.pill.pass{background:var(--good-bg);color:var(--good)} .pill.fail{background:var(--bad-bg);color:var(--bad)} .pill.none{background:var(--na-bg);color:var(--na)}
+.meta{color:var(--muted);font-size:13px}
+.meta b{color:var(--ink);font-weight:600}
+.meta .crit{color:var(--bad);font-weight:600}
+.prog{flex:1 1 140px;height:6px;background:var(--line);border-radius:3px;overflow:hidden;min-width:120px}
+.prog i{display:block;height:100%;background:var(--accent)}
+nav.tabs{display:flex;gap:4px;margin:12px 0 16px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav.tabs a{padding:8px 14px;text-decoration:none;color:var(--muted);font-weight:600;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs a[aria-current="page"]{color:var(--accent);border-bottom-color:var(--accent)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted)}
+label.f input,label.f select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;font-size:14px;font-weight:400;color:var(--ink);width:100%}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 14px;font-weight:600;font-size:14px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.danger.armed{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+section.sec{margin-top:22px}
+.sec-h{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;justify-content:space-between;padding:0 2px 8px}
+.sec-h h2{font-size:17px;margin:0;font-weight:700}
+.chip{font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--na-bg);color:var(--na)}
+.chip.pass{background:var(--good-bg);color:var(--good)} .chip.fail{background:var(--bad-bg);color:var(--bad)}
+ul.items{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+li.item{padding:12px 14px;border-top:1px solid var(--line);border-left:4px solid transparent;display:grid;grid-template-columns:1fr auto;gap:8px 16px;align-items:center}
+li.item:first-child{border-top:0}
+li.item.is-D{border-left-color:var(--good)} li.item.is-C{border-left-color:var(--warn)} li.item.is-K{border-left-color:var(--bad)} li.item.is-N{border-left-color:var(--line)}
+.ih{display:flex;gap:10px;align-items:baseline;min-width:0}
+.code{font-weight:700;font-size:12px;color:var(--muted);min-width:24px}
+.txt{margin:0}
+.w3{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;padding:1px 7px;border-radius:4px;background:var(--bad-bg);color:var(--bad);white-space:nowrap}
+.src{display:inline-block;margin-left:6px;font-size:11px;color:var(--muted);white-space:nowrap}
+.rate{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.rate button{border:0;border-left:1px solid var(--line);background:var(--surface);padding:6px 10px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+.rate button:first-child{border-left:0}
+.rate button:hover{background:var(--accent-soft)}
+.rate button[aria-pressed="true"].rD{background:var(--good-bg);color:var(--good)}
+.rate button[aria-pressed="true"].rC{background:var(--warn-bg);color:var(--warn)}
+.rate button[aria-pressed="true"].rK{background:var(--bad-bg);color:var(--bad)}
+.rate button[aria-pressed="true"].rN{background:var(--na-bg);color:var(--ink)}
+.fix{grid-column:1/-1;display:grid;grid-template-columns:2fr 1fr;gap:8px}
+.fix[hidden]{display:none}
+.fix textarea{min-height:44px;resize:vertical}
+.fix textarea.need{border-color:var(--warn);background:var(--warn-bg)}
+.fix input{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;font-size:14px;width:100%}
+.fix .topic{grid-column:1/-1;font-size:12px;color:var(--muted)}
+h3{font-size:15px;margin:0 0 10px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600}
+td.n,th.n{text-align:right}
+.scroll{overflow-x:auto}
+.meter{height:8px;background:var(--line);border-radius:4px;overflow:hidden;min-width:90px}
+.meter i{display:block;height:100%;background:var(--good)} .meter.low i{background:var(--bad)}
+.stack{display:flex;flex-direction:column;gap:16px}
+.empty{color:var(--muted);margin:0}
+.note{font-size:13px;color:var(--muted);margin:10px 0 0}
+details summary{cursor:pointer;font-weight:600;color:var(--accent)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;max-width:calc(100% - 32px);z-index:9}
+@media (max-width:640px){
+  li.item{grid-template-columns:1fr}
+  .rate button{flex:1;padding:8px 4px}
+  .fix{grid-template-columns:1fr}
+  h1{font-size:22px}
+}
+@media (prefers-reduced-motion:no-preference){.prog i,.meter i{transition:width .2s}}
+</style></head><body><div id="app"></div><script>(function(){
+"use strict";
+var ITEMS=[["A1", "A", "Đồng phục sạch, phẳng, đúng quy định; bảng tên đeo đúng vị trí; giày sạch.", 2, 1, "Bổ sung 5★"], ["A2", "A", "Vệ sinh cá nhân: tóc gọn, móng tay ngắn và sạch, không trang sức rườm rà, không nước hoa nồng; rửa tay trước khi vào ca.", 3, 1, "Bổ sung 5★"], ["A3", "A", "Dự briefing đầu ca: nắm số khách dự kiến, khách VIP, thực đơn trong ngày, món điểm nhấn và món thay thế.", 2, 2, "Bổ sung 5★"], ["A4", "A", "Nắm thành phần món ăn và các chất gây dị ứng chính để tư vấn khi khách hỏi.", 3, 2, "Bổ sung 5★"], ["B1", "B", "Layout các quầy thức ăn được thống nhất với Bếp tối thiểu trước 1 ngày; số bàn line tính theo số món trên thực đơn.", 2, 7, "SOP"], ["B2", "B", "Danh sách dụng cụ được lập và chuẩn bị đủ: đĩa 18, đĩa 25, chén soup, chén sốt, đĩa lót tông gắp, dao nĩa, muỗng, đũa, ly.", 2, 3, "SOP"], ["B3", "B", "Dụng cụ lấy thức ăn (tông gắp, vá, muỗng) đủ theo số món và có dự phòng.", 2, 3, "SOP"], ["B4", "B", "Đồ vải đủ và đạt chuẩn: khăn bàn, khăn ăn, ribbon, khăn quấn tay cầm chafer dish sạch, phẳng, không ố, không rách.", 2, 3, "SOP + 5★"], ["B5", "B", "Đĩa, ly, dao nĩa được lau bóng: không vết nước, không vân tay, không sứt mẻ.", 2, 3, "Bổ sung 5★"], ["B6", "B", "Bộ gia vị, hoa trang trí và giá đỡ món ăn trên line chuẩn bị đủ, sạch.", 1, 3, "SOP"], ["C1", "C", "Dây điện đến bếp điện, cây nhiệt giữ nóng, đèn trang trí được lắp và kiểm tra hoạt động; dây đi gọn, che kín, không cản lối đi.", 3, 3, "SOP + 5★"], ["C2", "C", "Line buffet bố trí đúng layout, thuận tiện cho việc lấy món, không gây ách tắc.", 2, 3, "SOP"], ["C3", "C", "Dụng cụ ăn đặt ở đầu line hoặc bàn riêng, xếp ngay ngắn, đủ số lượng.", 2, 3, "SOP"], ["C4", "C", "Đủ và đúng các quầy: Salad & Dressing; Món nguội, Khai vị; Món nóng, Món chính; Tráng miệng.", 2, 3, "SOP"], ["C5", "C", "Quầy show-cooking và quầy điểm nhấn của thực đơn bố trí riêng, ở vị trí dễ nhìn thấy nhất.", 1, 3, "SOP"], ["C6", "C", "Sốt đặt cạnh món tương ứng hoặc tập trung tại bàn dressing; đủ chén sốt.", 1, 3, "SOP"], ["C7", "C", "Mỗi món có dụng cụ lấy phù hợp đặt trên đĩa lót (tông gắp cho mì; vá sâu cho soup, chè; vá nông cho cơm, món nhiều sốt).", 2, 3, "SOP"], ["C8", "C", "Nametag đúng món, đúng chính tả, sạch, đặt ngay ngắn; có ký hiệu dị ứng, món chay, thịt heo.", 2, 3, "SOP + 5★"], ["C9", "C", "Khăn phủ bàn line phẳng, cân đều, che kín chân bàn; trang trí hài hòa, không che món ăn.", 1, 3, "Bổ sung 5★"], ["D1", "D", "Bàn ghế thẳng hàng, chắc chắn, không cập kênh; lối đi thông thoáng.", 1, 4, "Bổ sung 5★"], ["D2", "D", "Khăn bàn sạch, phẳng, rủ đều các cạnh.", 1, 4, "Bổ sung 5★"], ["D3", "D", "Dao nĩa, muỗng đũa đặt đúng vị trí, thẳng hàng, cách mép bàn đồng đều.", 2, 4, "Bổ sung 5★"], ["D4", "D", "Ly sạch bóng, đặt đúng vị trí theo chuẩn set-up bàn tiệc.", 2, 4, "SOP + 5★"], ["D5", "D", "Khăn ăn gấp đồng nhất; bộ gia vị và hoa đủ, sạch, đầy.", 1, 4, "SOP + 5★"], ["E1", "E", "Hoàn tất kiểm tra set-up tối thiểu 45 phút trước giờ phục vụ.", 2, 3, "SOP"], ["E2", "E", "Dụng cụ trên bàn line đủ và đúng với nametag từng món.", 2, 3, "SOP"], ["E3", "E", "Dụng cụ dự phòng để đúng khu vực quy định.", 1, 3, "SOP"], ["E4", "E", "Khu vực hậu cần gọn gàng, có sẵn ghế bổ sung.", 1, 3, "SOP"], ["E5", "E", "Chafer dish sạch bóng và đã có nước nóng.", 2, 3, "SOP"], ["E6", "E", "Hũ đốt cồn lau sạch và được châm cồn trước giờ phục vụ 15–20 phút.", 2, 3, "SOP"], ["E7", "E", "Giám sát và tổ trưởng đã double check và xác nhận.", 2, 3, "SOP"], ["F1", "F", "100% thức ăn trên line sẵn sàng tối thiểu 15 phút trước giờ mở cửa đón khách.", 3, 7, "SOP"], ["F2", "F", "Trưởng ca/Quản lý sảnh liên lạc bộ đàm liên tục với Bếp về tốc độ tiêu thụ món và số khách thực tế.", 2, 7, "SOP"], ["F3", "F", "Trình tự lên món đúng: salad, món nguội, canapé, bánh mì, tráng miệng lên trước; món nóng và live station lên sau cùng, sát giờ khai tiệc.", 2, 7, "SOP"], ["F4", "F", "Nước trong chafer dish được đun sôi trước khi đặt khay thức ăn nóng.", 2, 5, "SOP"], ["F5", "F", "Món nóng luôn duy trì từ 60°C trở lên (kiểm tra bằng nhiệt kế).", 3, 5, "SOP"], ["F6", "F", "Món lạnh trên khay đá luôn từ 5°C trở xuống (kiểm tra bằng nhiệt kế).", 3, 5, "SOP"], ["F7", "F", "Điều chỉnh lửa cồn/nhiệt điện theo món: món hầm, sốt đủ hơi nước; đồ chiên, quay, nướng hé nắp hoặc dùng đèn hồng ngoại, không đọng nước.", 1, 5, "SOP"], ["G1", "G", "Quy tắc 1/3: báo Bếp chuẩn bị khi khay còn 1/2, thay khay khi còn 1/3; không để khay trống.", 2, 6, "SOP"], ["G2", "G", "Thay khay toàn diện: rút khay cũ về hậu cần, đặt khay mới 100%; không trút thức ăn mới lên thức ăn cũ trước mặt khách.", 3, 6, "SOP"], ["G3", "G", "Không ngưng châm món ngon/giá trị cao; khi hết nguyên liệu có món thay thế tương đương và giới thiệu khéo với khách.", 2, 6, "SOP"], ["G4", "G", "Thức ăn rơi vãi được gắp bỏ ngay; vết sốt, dầu mỡ trên viền khay và chafer được lau bằng khăn sạch ẩm.", 2, 6, "SOP"], ["G5", "G", "Đĩa món nguội, tráng miệng khi vơi được tém gọn vào giữa, luôn trông đầy đặn.", 1, 6, "SOP"], ["G6", "G", "Đĩa, chén cho khách được châm liên tục, không để thiếu.", 2, 6, "SOP"], ["G7", "G", "Dụng cụ gắp rơi vào thức ăn hoặc dính lẫn sốt được thay mới ngay.", 2, 6, "SOP"], ["H1", "H", "Chào khách ngay khi khách đến: mỉm cười, giao tiếp bằng mắt, xưng hô đúng mực.", 2, 8, "Bổ sung 5★"], ["H2", "H", "Dẫn khách đến bàn, kéo ghế mời ngồi, giới thiệu ngắn gọn các quầy và món điểm nhấn.", 2, 8, "Bổ sung 5★"], ["H3", "H", "Mời thức uống ngay sau khi khách ổn định chỗ ngồi.", 2, 8, "Bổ sung 5★"], ["H4", "H", "Khách VIP: chủ động đề xuất phục vụ món tại bàn hoặc tháp tùng khách.", 2, 8, "SOP"], ["H5", "H", "Chủ động quan sát và đề nghị bưng đĩa giúp người lớn tuổi, phụ nữ mang thai/có con nhỏ, người khuyết tật.", 2, 8, "SOP"], ["H6", "H", "Châm thức uống kịp thời: không để ly của khách cạn quá 1/3 mà chưa được mời thêm.", 2, 8, "SOP"], ["H7", "H", "Hỏi và ghi nhận dị ứng, yêu cầu ăn kiêng của khách; báo Bếp và Giám sát.", 3, 2, "Bổ sung 5★"], ["H8", "H", "Hỏi thăm sự hài lòng của khách trong bữa; tiếp nhận phàn nàn đúng quy trình và báo Giám sát.", 2, 8, "Bổ sung 5★"], ["H9", "H", "Cảm ơn và tiễn khách khi khách ra về.", 1, 8, "Bổ sung 5★"], ["I1", "I", "Nhận biết ngôn ngữ dao nĩa; xin phép khách trước khi dọn đĩa.", 2, 9, "SOP"], ["I2", "I", "Clear đĩa dơ trong vòng 3 phút; không để đĩa dơ chồng chất trên bàn.", 2, 9, "SOP"], ["I3", "I", "Thu dọn liên tục vụn thức ăn, khăn giấy bẩn; gấp gọn khăn ăn khi khách tạm rời bàn.", 1, 9, "SOP"], ["I4", "I", "Đồ thu dọn mang ngay vào hậu cần, phân loại riêng đĩa sứ, đồ thủy tinh, dao nĩa.", 1, 9, "SOP"], ["I5", "I", "Không dùng xe đẩy trong sảnh tiệc; chỉ dùng khay phục vụ để thu dọn (tùy chọn theo SOP).", 1, 9, "SOP"], ["I6", "I", "Chỉ tổng dọn khi khách đã ngưng dùng bữa.", 1, 9, "SOP"], ["I7", "I", "Re-setup cho ca sau đúng tiêu chuẩn dịch vụ.", 2, 9, "SOP"]], SEC={"A": "A. Tác phong & sẵn sàng", "B": "B. Chuẩn bị", "C": "C. Set-up line buffet", "D": "D. Set-up bàn ăn", "E": "E. Kiểm tra trước giờ phục vụ", "F": "F. Lên thức ăn & nhiệt độ", "G": "G. Châm món & vệ sinh line", "H": "H. Phục vụ khách", "I": "I. Thu dọn & re-setup"}, TOPICS={"1": "Tác phong & vệ sinh cá nhân", "2": "Kiến thức món & dị ứng", "3": "Chuẩn bị & set-up line buffet", "4": "Set-up bàn ăn", "5": "An toàn thực phẩm & nhiệt độ", "6": "Châm món & vệ sinh line", "7": "Phối hợp Bếp – Sảnh", "8": "Kỹ năng phục vụ & giao tiếp", "9": "Thu dọn & re-setup"}, HEAD="\u003cmeta charset=\"utf-8\">\u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\u003ctitle>Audit Buffet 5 Sao\u003c/title>\u003clink rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\u003clink rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\u003clink href=\"https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap\" rel=\"stylesheet\">";
+var RATES=[["D","Đạt"],["C","Cần cải thiện"],["K","Không đạt"],["N","N/A"]];
+var RNAME={D:"Đạt",C:"Cần cải thiện",K:"Không đạt",N:"N/A"};
+var VIEWS={"cham-diem":"Chấm điểm","tong-hop":"Tổng hợp","lich-su":"Lịch sử"};
+var KEY="audit-buffet-draft-v1";var HKEY="audit-buffet-history-v1";
+var saved={history:[]};
+try{var s=JSON.parse(localStorage.getItem(HKEY));if(s&&Array.isArray(s.history))saved=s;}catch(e){}
+function today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function blank(){return {info:{date:today(),outlet:"",shift:"",auditor:"",team:"",thr:85},r:{},n:{}};}
+var draft=blank();
+try{var d=JSON.parse(localStorage.getItem(KEY));if(d&&d.info&&d.r&&d.n)draft=d;}catch(e){}
+var saveT=null;
+function persist(){clearTimeout(saveT);saveT=setTimeout(function(){try{localStorage.setItem(KEY,JSON.stringify(draft));}catch(e){}},250);}
+var caps={downloads:true};
+function esc(x){return String(x==null?"":x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function $(q,el){return (el||document).querySelector(q);}
+function fmtPct(p){return p==null?"–":(Math.round(p*10)/10).toFixed(1)+"%";}
+function fmtDate(s){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||"");return m?m[3]+"/"+m[2]+"/"+m[1]:(s||"");}
+
+function calc(r,thr){
+  var o={got:0,max:0,crit:0,done:0,fails:0,sec:{},topic:{}};
+  Object.keys(SEC).forEach(function(k){o.sec[k]={got:0,max:0,fails:0,n:0,done:0};});
+  ITEMS.forEach(function(it){
+    var v=r[it[0]],w=it[3],s=o.sec[it[1]];s.n++;
+    if(!v)return; o.done++; s.done++;
+    if(v==="N")return;
+    o.max+=w;s.max+=w;
+    if(v==="D"){o.got+=w;s.got+=w;return;}
+    if(v==="C"){o.got+=w/2;s.got+=w/2;}
+    if(v==="K"&&w===3)o.crit++;
+    o.fails++;s.fails++;o.topic[it[4]]=(o.topic[it[4]]||0)+1;
+  });
+  o.pct=o.max?o.got/o.max*100:null;
+  o.result=o.max?(o.pct>=thr&&o.crit===0?"PASS":"FAIL"):null;
+  return o;
+}
+function thr(){var t=Number(draft.info.thr);return t>0&&t<=100?t:85;}
+
+var app=document.getElementById("app");
+function view(){var h=location.hash.replace("#","");return VIEWS[h]?h:"cham-diem";}
+
+function shell(){
+  app.innerHTML='<div class="wrap"><header class="top"><h1>Audit Buffet Long Bien Golf Course</h1><p class="sub">'+ITEMS.length+' tiêu chí · '+Object.keys(SEC).length+' hạng mục</p></header>'+
+  '<div class="bar"><div class="bar-in" id="bar"></div></div><nav class="tabs" id="tabs"></nav><main id="main"></main></div>';
+}
+function renderBar(){
+  var c=calc(draft.r,thr());
+  var cls=c.result==="PASS"?"pass":c.result==="FAIL"?"fail":"none";
+  $("#bar").innerHTML='<span class="pct">'+fmtPct(c.pct)+'</span><span class="pill '+cls+'">'+(c.result||"CHƯA CHẤM")+'</span>'+
+   '<span class="meta">Đã chấm <b>'+c.done+'/'+ITEMS.length+'</b> · Ngưỡng <b>'+thr()+'%</b> · '+(c.crit?'<span class="crit">'+c.crit+' lỗi trọng yếu</span>':'0 lỗi trọng yếu')+'</span>'+
+   '<span class="prog" aria-hidden="true"><i style="width:'+(c.done/ITEMS.length*100)+'%"></i></span>';
+  return c;
+}
+function renderTabs(){
+  var v=view();
+  $("#tabs").innerHTML=Object.keys(VIEWS).map(function(k){return '<a href="#'+k+'"'+(k===v?' aria-current="page"':'')+'>'+VIEWS[k]+(k==="lich-su"&&saved.history.length?' ('+saved.history.length+')':'')+'</a>';}).join("");
+}
+function secChip(k,c){
+  var s=c.sec[k];if(!s.max)return '<span class="chip" data-chip="'+k+'">'+s.done+'/'+s.n+' đã chấm</span>';
+  var p=s.got/s.max*100;
+  return '<span class="chip '+(p>=thr()?"pass":"fail")+'" data-chip="'+k+'">'+fmtPct(p)+' · '+s.done+'/'+s.n+(s.fails?' · '+s.fails+' FAIL':'')+'</span>';
+}
+function itemHtml(it){
+  var code=it[0],v=draft.r[code]||"",n=draft.n[code]||{},fail=v==="C"||v==="K";
+  return '<li class="item'+(v?' is-'+v:'')+'" data-code="'+code+'"><div class="ih"><span class="code">'+code+'</span><p class="txt">'+esc(it[2])+
+    (it[3]===3?'<span class="w3">Trọng yếu</span>':'')+(it[5]!=="SOP"?'<span class="src">'+esc(it[5])+'</span>':'')+'</p></div>'+
+    '<div class="rate" role="group" aria-label="Đánh giá '+code+'">'+RATES.map(function(r){return '<button type="button" class="r'+r[0]+'" data-rate="'+r[0]+'" aria-pressed="'+(v===r[0])+'">'+r[1]+'</button>';}).join("")+'</div>'+
+    '<div class="fix"'+(fail?'':' hidden')+'><textarea id="note-'+code+'" data-note placeholder="Ghi chú lỗi sai: sai gì, ở đâu, lúc nào" aria-label="Ghi chú lỗi sai '+code+'" class="'+(n.note?'':'need')+'">'+esc(n.note)+'</textarea>'+
+    '<input id="staff-'+code+'" data-staff placeholder="Nhân viên liên quan" aria-label="Nhân viên liên quan '+code+'" value="'+esc(n.staff)+'">'+
+    '<span class="topic">Chủ đề training: '+esc(TOPICS[it[4]])+'</span></div></li>';
+}
+function renderChecklist(c){
+  var i=draft.info;
+  var h='<div class="card"><div class="grid">'+
+   '<label class="f" for="f-date">Ngày audit<input id="f-date" type="date" data-info="date" value="'+esc(i.date)+'"></label>'+
+   '<label class="f" for="f-outlet">Nhà hàng / Outlet<input id="f-outlet" data-info="outlet" value="'+esc(i.outlet)+'"></label>'+
+   '<label class="f" for="f-shift">Ca phục vụ<select id="f-shift" data-info="shift">'+["","Buffet sáng","Buffet trưa","Buffet tối","Tiệc buffet"].map(function(o){return '<option'+(o===i.shift?' selected':'')+' value="'+o+'">'+(o||"Chọn ca")+'</option>';}).join("")+'</select></label>'+
+   '<label class="f" for="f-auditor">Người đánh giá<input id="f-auditor" data-info="auditor" value="'+esc(i.auditor)+'"></label>'+
+   '<label class="f" for="f-team">Nhân viên / Tổ được đánh giá<input id="f-team" data-info="team" value="'+esc(i.team)+'"></label>'+
+   '<label class="f" for="f-thr">Ngưỡng đạt (%)<input id="f-thr" type="number" min="1" max="100" data-info="thr" value="'+esc(i.thr)+'"></label>'+
+   '</div><div class="actions"><button class="btn primary" type="button" id="b-save">Lưu lần audit này</button>'+
+   '<button class="btn" type="button" id="b-allpass">Đánh dấu Đạt cho tiêu chí chưa chấm</button>'+
+   '<button class="btn danger" type="button" id="b-reset">Xóa để chấm mới</button></div>'+
+   '<p class="note">Bản đang chấm được giữ tạm trên trình duyệt này. Bấm “Lưu lần audit này” để ghi vào Lịch sử. Lịch sử được lưu riêng trên trình duyệt của thiết bị này; tải CSV để lưu hồ sơ chung.</p></div>';
+  Object.keys(SEC).forEach(function(k){
+    h+='<section class="sec"><div class="sec-h"><h2>'+esc(SEC[k])+'</h2>'+secChip(k,c)+'</div><ul class="items">'+ITEMS.filter(function(it){return it[1]===k;}).map(itemHtml).join("")+'</ul></section>';
+  });
+  $("#main").innerHTML=h;
+}
+function failRows(r,n){
+  return ITEMS.filter(function(it){var v=r[it[0]];return v==="C"||v==="K";}).map(function(it){var x=n[it[0]]||{};
+    return '<tr><td><b>'+it[0]+'</b>'+(it[3]===3?' <span class="w3">Trọng yếu</span>':'')+'</td><td>'+esc(it[2])+'</td><td><span class="chip fail">'+RNAME[r[it[0]]]+'</span></td><td>'+esc(x.note||"")+'</td><td>'+esc(x.staff||"")+'</td></tr>';}).join("");
+}
+function renderSummary(c){
+  var t=thr(),h='<div class="stack">';
+  h+='<div class="card"><h3>Kết quả theo hạng mục</h3><div class="scroll"><table><thead><tr><th>Hạng mục</th><th class="n">Điểm</th><th class="n">Tỷ lệ đạt</th><th></th><th class="n">FAIL</th><th>Kết quả</th></tr></thead><tbody>'+
+   Object.keys(SEC).map(function(k){var s=c.sec[k],p=s.max?s.got/s.max*100:null,ok=p!=null&&p>=t;
+    return '<tr><td>'+esc(SEC[k])+'</td><td class="n">'+(s.max?s.got+' / '+s.max:'–')+'</td><td class="n">'+fmtPct(p)+'</td><td><div class="meter'+(ok?'':' low')+'"><i style="width:'+(p||0)+'%"></i></div></td><td class="n">'+s.fails+'</td><td>'+(p==null?'<span class="chip">Chưa chấm</span>':'<span class="chip '+(ok?'pass">PASS':'fail">FAIL')+'</span>')+'</td></tr>';}).join("")+
+   '</tbody></table></div><p class="note">PASS chung khi tỷ lệ đạt từ '+t+'% trở lên và không có tiêu chí trọng yếu nào “Không đạt”. “Cần cải thiện” nhận 50% điểm và tính là FAIL ở tiêu chí đó. N/A không tính điểm.</p></div>';
+  var tp=Object.keys(c.topic).map(function(k){return [TOPICS[k],c.topic[k]];}).sort(function(a,b){return b[1]-a[1];});
+  h+='<div class="card"><h3>Nhu cầu training</h3>'+(tp.length?'<table><thead><tr><th>Chủ đề</th><th class="n">Số tiêu chí FAIL</th></tr></thead><tbody>'+tp.map(function(x){return '<tr><td>'+esc(x[0])+'</td><td class="n">'+x[1]+'</td></tr>';}).join("")+'</tbody></table>':'<p class="empty">Chưa có tiêu chí FAIL.</p>')+'</div>';
+  var fr=failRows(draft.r,draft.n);
+  h+='<div class="card"><h3>Danh sách lỗi cần khắc phục</h3>'+(fr?'<div class="scroll"><table><thead><tr><th>Mã</th><th>Tiêu chuẩn</th><th>Đánh giá</th><th>Ghi chú lỗi sai</th><th>Nhân viên</th></tr></thead><tbody>'+fr+'</tbody></table></div>':'<p class="empty">Chưa có tiêu chí FAIL.</p>')+
+   '<div class="actions"><button class="btn" type="button" id="b-copy">Sao chép báo cáo lỗi</button>'+(caps.downloads?'<button class="btn" type="button" id="b-csv">Tải CSV lần audit này</button>':'')+'</div></div></div>';
+  $("#main").innerHTML=h;
+}
+function renderHistory(){
+  var H=saved.history,h='<div class="stack">';
+  if(!H.length){h+='<div class="card"><p class="empty">Chưa có lần audit nào được lưu. Chấm xong ở tab Chấm điểm rồi bấm “Lưu lần audit này”.</p></div>';}
+  else{
+    h+='<div class="card"><h3>Các lần audit đã lưu</h3><div class="scroll"><table><thead><tr><th>Ngày</th><th>Ca</th><th>Tổ / Nhân viên</th><th>Người đánh giá</th><th class="n">Tỷ lệ đạt</th><th>Kết quả</th><th>Lỗi</th><th></th></tr></thead><tbody>'+
+     H.map(function(a,ix){var codes=Object.keys(a.f||{});
+       var det=codes.length?'<details><summary>'+codes.length+' FAIL'+(a.crit?', '+a.crit+' trọng yếu':'')+'</summary>'+codes.map(function(cd){var x=a.f[cd];return '<div><b>'+esc(cd)+'</b> '+RNAME[x[0]]+(x[1]?': '+esc(x[1]):'')+(x[2]?' ('+esc(x[2])+')':'')+'</div>';}).join("")+'</details>':'0';
+       return '<tr><td>'+fmtDate(a.date)+'</td><td>'+esc(a.shift)+'</td><td>'+esc(a.team)+'</td><td>'+esc(a.auditor)+'</td><td class="n">'+fmtPct(a.pct)+'</td><td><span class="chip '+(a.result==="PASS"?"pass":"fail")+'">'+a.result+'</span></td><td>'+det+'</td><td><button class="btn danger" type="button" data-del="'+ix+'">Xóa</button></td></tr>';}).join("")+
+     '</tbody></table></div>'+(caps.downloads?'<div class="actions"><button class="btn" type="button" id="b-csvh">Tải CSV lịch sử</button></div>':'')+'</div>';
+    var cnt={},tc={};
+    H.forEach(function(a){Object.keys(a.f||{}).forEach(function(cd){cnt[cd]=(cnt[cd]||0)+1;});});
+    var byCode={};ITEMS.forEach(function(it){byCode[it[0]]=it;});
+    Object.keys(cnt).forEach(function(cd){var it=byCode[cd];if(it)tc[it[4]]=(tc[it[4]]||0)+cnt[cd];});
+    var top=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];}).slice(0,10);
+    h+='<div class="card"><h3>Tiêu chí FAIL nhiều nhất ('+H.length+' lần audit)</h3>'+(top.length?'<div class="scroll"><table><thead><tr><th>Mã</th><th>Tiêu chuẩn</th><th class="n">Số lần FAIL</th></tr></thead><tbody>'+top.map(function(cd){return '<tr><td><b>'+esc(cd)+'</b></td><td>'+esc(byCode[cd]?byCode[cd][2]:"")+'</td><td class="n">'+cnt[cd]+'</td></tr>';}).join("")+'</tbody></table></div>':'<p class="empty">Chưa ghi nhận lỗi.</p>')+'</div>';
+    var tl=Object.keys(tc).sort(function(a,b){return tc[b]-tc[a];});
+    h+='<div class="card"><h3>Ưu tiên training theo lịch sử</h3>'+(tl.length?'<table><thead><tr><th>Chủ đề</th><th class="n">Tổng số lần FAIL</th></tr></thead><tbody>'+tl.map(function(k){return '<tr><td>'+esc(TOPICS[k])+'</td><td class="n">'+tc[k]+'</td></tr>';}).join("")+'</tbody></table>':'<p class="empty">Chưa ghi nhận lỗi.</p>')+'</div>';
+  }
+  $("#main").innerHTML=h+'</div>';
+}
+function render(){
+  var c=renderBar();renderTabs();
+  var v=view();
+  if(v==="cham-diem")renderChecklist(c);else if(v==="tong-hop")renderSummary(c);else renderHistory();
+}
+function refreshLight(){
+  var c=renderBar();
+  Object.keys(SEC).forEach(function(k){var el=$('[data-chip="'+k+'"]');if(el)el.outerHTML=secChip(k,c);});
+}
+var toastT=null;
+function toast(m){var t=$(".toast");if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);}t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){t.hidden=true;},4200);}
+
+function publish(state,okMsg,onFail,onOk){
+  try{localStorage.setItem(HKEY,JSON.stringify(state));}
+  catch(e){if(onFail)onFail();toast("Trình duyệt không cho lưu dữ liệu. Hãy tắt chế độ ẩn danh rồi thử lại.");return;}
+  saved=state;if(onOk)onOk();render();toast(okMsg);
+}
+function saveAudit(){
+  var c=calc(draft.r,thr());
+  if(!c.max){toast("Chưa có tiêu chí nào được chấm.");return;}
+  var f={};ITEMS.forEach(function(it){var v=draft.r[it[0]];if(v==="C"||v==="K"){var x=draft.n[it[0]]||{};f[it[0]]=[v,x.note||"",x.staff||""];}});
+  var i=draft.info;
+  var rec={id:Date.now(),date:i.date,outlet:i.outlet,shift:i.shift,auditor:i.auditor,team:i.team,thr:thr(),pct:Math.round(c.pct*10)/10,got:c.got,max:c.max,done:c.done,crit:c.crit,result:c.result,f:f};
+  var keep=JSON.stringify(draft);
+  clearTimeout(saveT);try{localStorage.removeItem(KEY);}catch(e){}
+  publish({history:[rec].concat(saved.history)},"Đã lưu vào Lịch sử.",function(){try{localStorage.setItem(KEY,keep);}catch(e){}},function(){draft=blank();});
+}
+function csvCell(x){x=String(x==null?"":x);return /[",\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;}
+function download(name,rows){
+  var data="\ufeff"+rows.map(function(r){return r.map(csvCell).join(",");}).join("\r\n");
+  try{var u=URL.createObjectURL(new Blob([data],{type:"text/csv;charset=utf-8"}));var a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},1000);}
+  catch(e){toast("Không tải được file trên trình duyệt này.");}
+}
+function csvCurrent(){
+  var i=draft.info,c=calc(draft.r,thr());
+  var rows=[["Ngày audit",fmtDate(i.date)],["Nhà hàng",i.outlet],["Ca",i.shift],["Người đánh giá",i.auditor],["Nhân viên / Tổ",i.team],["Tỷ lệ đạt",fmtPct(c.pct)],["Kết quả",c.result||"Chưa chấm"],[],
+   ["Mã","Hạng mục","Tiêu chuẩn kiểm tra","Trọng số","Đánh giá","Điểm","Pass/Fail","Ghi chú lỗi sai","Nhân viên liên quan","Chủ đề training","Nguồn"]];
+  ITEMS.forEach(function(it){var v=draft.r[it[0]]||"",x=draft.n[it[0]]||{},fail=v==="C"||v==="K";
+    rows.push([it[0],SEC[it[1]],it[2],it[3],RNAME[v]||"",v===""||v==="N"?"":(v==="D"?it[3]:v==="C"?it[3]/2:0),v===""?"":v==="N"?"N/A":v==="D"?"PASS":"FAIL",fail?x.note||"":"",fail?x.staff||"":"",TOPICS[it[4]],it[5]]);});
+  download("audit-buffet-"+(i.date||today())+".csv",rows);
+}
+function csvHistory(){
+  var rows=[["Ngày","Nhà hàng","Ca","Nhân viên / Tổ","Người đánh giá","Tỷ lệ đạt (%)","Ngưỡng (%)","Lỗi trọng yếu","Kết quả","Tiêu chí FAIL"]];
+  saved.history.forEach(function(a){rows.push([fmtDate(a.date),a.outlet,a.shift,a.team,a.auditor,a.pct,a.thr,a.crit,a.result,Object.keys(a.f||{}).map(function(cd){var x=a.f[cd];return cd+" "+RNAME[x[0]]+(x[1]?": "+x[1]:"")+(x[2]?" ("+x[2]+")":"");}).join(" | ")]);});
+  download("lich-su-audit-buffet.csv",rows);
+}
+function copyReport(){
+  var i=draft.info,c=calc(draft.r,thr());
+  var t="AUDIT BUFFET "+fmtDate(i.date)+(i.shift?" · "+i.shift:"")+(i.team?" · "+i.team:"")+"\nKết quả: "+(c.result||"Chưa chấm")+" · "+fmtPct(c.pct)+" · "+c.crit+" lỗi trọng yếu\n";
+  ITEMS.forEach(function(it){var v=draft.r[it[0]];if(v==="C"||v==="K"){var x=draft.n[it[0]]||{};t+="\n"+it[0]+(it[3]===3?" [Trọng yếu]":"")+" · "+RNAME[v]+" · "+it[2]+(x.note?"\n  Lỗi: "+x.note:"")+(x.staff?"\n  Nhân viên: "+x.staff:"");}});
+  try{navigator.clipboard.writeText(t).then(function(){toast("Đã sao chép báo cáo.");},function(){toast("Trình duyệt không cho sao chép.");});}catch(e){toast("Trình duyệt không cho sao chép.");}
+}
+var armed=null;
+function arm(btn,label,fn){
+  if(armed===btn){armed=null;fn();return;}
+  if(armed){armed.classList.remove("armed");armed.textContent=armed.dataset.label;}
+  armed=btn;btn.dataset.label=btn.textContent;btn.textContent=label;btn.classList.add("armed");
+  setTimeout(function(){if(armed===btn){btn.classList.remove("armed");btn.textContent=btn.dataset.label;armed=null;}},4000);
+}
+app.addEventListener("click",function(ev){
+  var b=ev.target.closest("button");if(!b)return;
+  if(b.dataset.rate){
+    var li=b.closest("li.item"),code=li.dataset.code,v=b.dataset.rate;
+    if(draft.r[code]===v)delete draft.r[code];else draft.r[code]=v;
+    var cur=draft.r[code]||"";
+    li.className="item"+(cur?" is-"+cur:"");
+    li.querySelectorAll(".rate button").forEach(function(x){x.setAttribute("aria-pressed",String(x.dataset.rate===cur));});
+    $(".fix",li).hidden=!(cur==="C"||cur==="K");
+    persist();refreshLight();return;
+  }
+  if(b.id==="b-save")return saveAudit();
+  if(b.id==="b-allpass"){ITEMS.forEach(function(it){if(!draft.r[it[0]])draft.r[it[0]]="D";});persist();render();return;}
+  if(b.id==="b-reset")return arm(b,"Bấm lần nữa để xóa",function(){draft=blank();persist();render();toast("Đã xóa bản đang chấm.");});
+  if(b.id==="b-copy")return copyReport();
+  if(b.id==="b-csv")return csvCurrent();
+  if(b.id==="b-csvh")return csvHistory();
+  if(b.dataset.del!=null)return arm(b,"Xóa hẳn?",function(){var H=saved.history.slice();H.splice(Number(b.dataset.del),1);publish({history:H},"Đã xóa lần audit.");});
+});
+app.addEventListener("input",function(ev){
+  var t=ev.target;
+  if(t.dataset.info){draft.info[t.dataset.info]=t.value;persist();if(t.dataset.info==="thr")refreshLight();return;}
+  var li=t.closest("li.item");if(!li)return;
+  var code=li.dataset.code;draft.n[code]=draft.n[code]||{};
+  if(t.hasAttribute("data-note")){draft.n[code].note=t.value;t.classList.toggle("need",!t.value.trim());}
+  if(t.hasAttribute("data-staff"))draft.n[code].staff=t.value;
+  persist();
+});
+window.addEventListener("hashchange",function(){render();window.scrollTo(0,0);});
+shell();render();
+})();
+</script></body></html>
